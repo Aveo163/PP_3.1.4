@@ -1,5 +1,6 @@
 package ru.kata.spring.boot_security.demo.service;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -39,7 +40,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Transactional
     public void updateUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        User oldUser = userRepository.findById(user.getId()).get();
+        String oldPassword = oldUser.getPassword();
+        if (user.getPassword() == null || user.getPassword().isEmpty()) {
+            user.setPassword(oldPassword);
+        }else {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
         userRepository.save(user);
     }
 
