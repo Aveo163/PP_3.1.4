@@ -40,13 +40,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Transactional
     public void updateUser(User user) {
-        User oldUser = userRepository.findById(user.getId()).get();
-        String oldPassword = oldUser.getPassword();
-        if (user.getPassword() == null || user.getPassword().isEmpty()) {
-            user.setPassword(oldPassword);
-        }else {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-        }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 
